@@ -1,0 +1,76 @@
+namespace ease.demo.travelsystem.data;
+
+@Schema: 'TRAVELSYSTEM'
+
+context Util {
+
+    type SString : hana.VARCHAR(50);
+    type MString : String(100);
+    type LString : String(255);
+
+@Catalog.tableType: #COLUMN
+      Entity TravelRequest{
+            key ID: Integer;
+            Description: MString null;
+            Amount: Decimal(10, 4);
+            Currency: SString null;
+            Destination: SString null;
+            Dates: SString null;
+            ActivityType: MString null;
+            CommentText: LString null;
+            CommentDate: LocalDate;
+            SubmitterID: Integer null;
+      };
+
+
+@Catalog.tableType: #COLUMN
+      Entity Submitter{
+            key ID: Integer;
+            Name: MString null;
+            Org: SString null;
+            Company: SString null;
+            Address: MString null;
+            Phone: SString null;
+            Mobile: SString null;
+            Email: SString null;
+      };        
+
+
+@Catalog.tableType: #COLUMN
+      Entity CostAssignment{
+            key ID: Integer;
+            Desc: SString null;
+            Category: SString null;
+            Share: Decimal(10, 4);
+            TravelRequest: Integer null;
+      };
+
+
+@Catalog.tableType: #COLUMN
+      Entity Info{
+            key ID: Integer;
+            Image: MString null;
+            TravelRequest: Integer null;
+      };
+
+
+@Catalog.tableType: #COLUMN
+      Entity Approver{
+            key ID: Integer;
+            Name: MString null;
+            Org: SString null;
+      };    
+
+
+@Catalog.tableType: #COLUMN
+      Entity PastRequest{
+            key ID: Integer;
+            Description: MString null;
+            Amount: Decimal(10, 4);
+            Currency: SString null;
+            Destination: SString null;
+            Dates: SString null;
+            Status: SString;
+            StatusVal: SString;
+      };
+};

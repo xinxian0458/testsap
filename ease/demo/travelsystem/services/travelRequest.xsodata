@@ -1,0 +1,57 @@
+// To define an XS OData service, you can use the following syntax.
+// In the example below Aggregation, Modification and Association are defined.
+
+service namespace "ease.demo.travelsystem.services" { 
+
+// Aggregation example: A view with ID Amount, Month, and Year columns created in sample.test package.
+// Call http://host:port/package/file.xsodata/MyView?$select=Year,Amount
+
+   "ease.demo.travelsystem.data::Util.Submitter" // Table or View  
+   	as "SubmitterSet";    // Additional aggregation per column are MIN, MAX, AVG
+   
+   "ease.demo.travelsystem.data::Util.TravelRequest" // Table or View  
+    as "TravelRequestSet"
+    navigates ("TravelRequestSubmitterSubmitter" as "Submitter", "TravelRequestAssignmentsCostAssignment" as "Assignments", "TravelRequestInfosInfo" as "Infos");    // Additional aggregation per column are MIN, MAX, AVG
+        
+	"ease.demo.travelsystem.data::Util.CostAssignment" 
+	 as "CostAssignmentSet";
+  	"ease.demo.travelsystem.data::Util.Info" 
+  	 as "InfoSet";
+  	"ease.demo.travelsystem.data::Util.Approver" 
+  	 as "ApproverSet";
+  	"ease.demo.travelsystem.data::Util.PastRequest" 
+  	 as "PastRequestSet";
+  
+  association "TravelRequestSubmitterSubmitter"
+    principal "SubmitterSet"("ID") multiplicity "1"
+    dependent "TravelRequestSet"("SubmitterID") multiplicity "1";
+  association "TravelRequestAssignmentsCostAssignment"
+    principal "TravelRequestSet"("ID") multiplicity "1"
+    dependent "CostAssignmentSet"("TravelRequest") multiplicity "*";
+  association "TravelRequestInfosInfo"
+    principal "TravelRequestSet"("ID") multiplicity "1"
+    dependent "InfoSet"("TravelRequest") multiplicity "*";
+// Modification exit example: A customer table and jsexit.xsjslib created in sample.test package.
+// Update and create are performed by jsexit.xsjslib functions instead of direct XSOData modifications,
+// and delete is forbidden
+
+//   "sample.test::customer" as "Customer"
+//// Use either "using" or "events" definition
+//   create  
+//       using "sample.test:jsexit.xsjslib::create_instead"             
+//   update   
+//       events ( before  "sample.test:jsexit.xsjslib::update_before",		// Alternatively use stored procedure 
+//                after "sample.test:jsexit.xsjslib::update_after"   )  		// Alternatively use stored procedure 
+//   delete forbidden;
+
+// Association example: Customer and order tables created in sample.test package.
+// Navigation from a customer to his orders is through the "Customer_Orders" association based on customer ID
+// Call http://host:port/package/file.xsodata/Customers(<key>)/HisOrders
+
+//    "sample.test::customer"
+//	 as "Customers" 
+//  	 navigates ("Customer_Orders" as "HisOrders");
+//	"sample.test::order" as "Orders"; 
+//    association "Customer_Orders" principal "Customers"("ID") multiplicity "1"
+//    dependent "Orders"("CustomerID") multiplicity "*";
+}  
